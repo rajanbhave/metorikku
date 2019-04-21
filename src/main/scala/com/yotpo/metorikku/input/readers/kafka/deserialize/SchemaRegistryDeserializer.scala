@@ -28,8 +28,7 @@ case class SchemaRegistryDeserializer(val schemaRegistryUrl: String, val topic: 
   def getDeserializedDataframe(sparkSession: SparkSession, kafkaDataFrame: DataFrame): DataFrame = {
     val deserializeUDF = udf((bytes: Array[Byte]) =>
       kafkaAvroDeserializer.deserialize(bytes), sqlSchema.dataType)
-    kafkaDataFrame.select(
-      deserializeUDF(kafkaDataFrame.col("value")).alias("parsed"))
+    kafkaDataFrame.select(deserializeUDF(kafkaDataFrame.col("value")).alias("parsed"))
       .select("parsed.*")
   }
 
